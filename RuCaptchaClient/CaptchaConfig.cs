@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 
 namespace mevoronin.RuCaptchaNETClient
 {
     /// <summary>
-    /// Параметры капчи
+    /// Конфиг капчи
     /// </summary>
-    public class CaptchaParameters
+    public class CaptchaConfig
     {
         private Dictionary<string, string> parameters;
 
@@ -17,7 +18,18 @@ namespace mevoronin.RuCaptchaNETClient
         /// </summary>
         public Dictionary<string, string> Parameters { get { return parameters; } }
 
-        public CaptchaParameters()
+        /// <summary>
+        /// Получить список параметров
+        /// </summary>
+        public NameValueCollection GetParameters()
+        {
+            NameValueCollection nvc = new NameValueCollection();
+            foreach (var item in parameters)
+                nvc.Add(item.Key, item.Value);
+            return nvc;
+        }
+
+        public CaptchaConfig()
         {
             parameters = new Dictionary<string, string>();
         }
@@ -25,7 +37,7 @@ namespace mevoronin.RuCaptchaNETClient
         /// <summary>
         /// Капча имеет два слова
         /// </summary>
-        public CaptchaParameters SetIsPhrase(bool value)
+        public CaptchaConfig SetIsPhrase(bool value)
         {
             parameters["phrase"] = value ? "1" : "0";
             return this;
@@ -34,7 +46,7 @@ namespace mevoronin.RuCaptchaNETClient
         /// <summary>
         /// Капча регистр ответа имеет значения
         /// </summary>
-        public CaptchaParameters SetRegisterSensitive(bool value)
+        public CaptchaConfig SetRegisterSensitive(bool value)
         {
             parameters["regsense"] = value ? "1" : "0";
             return this;
@@ -43,7 +55,7 @@ namespace mevoronin.RuCaptchaNETClient
         /// <summary>
         /// Работнику нужно совершить математическое действие с капчей
         /// </summary>
-        public CaptchaParameters SetNeedCalc(bool value)
+        public CaptchaConfig SetNeedCalc(bool value)
         {
             parameters["calc"] = value ? "1" : "0";
             return this;
@@ -52,7 +64,7 @@ namespace mevoronin.RuCaptchaNETClient
         /// <summary>
         /// Из чего состоит капча
         /// </summary>
-        public CaptchaParameters SetCharType(CaptchaCharTypeEnum value)
+        public CaptchaConfig SetCharType(CaptchaCharTypeEnum value)
         {
             if (value == CaptchaCharTypeEnum.Default)
                 parameters.Remove("numeric");
@@ -64,7 +76,7 @@ namespace mevoronin.RuCaptchaNETClient
         /// <summary>
         /// Минимальное количество знаков в ответе
         /// </summary>
-        public CaptchaParameters SetMinLen(int? minLen)
+        public CaptchaConfig SetMinLen(int? minLen)
         {
             if (minLen.HasValue)
             {
@@ -80,7 +92,7 @@ namespace mevoronin.RuCaptchaNETClient
         /// <summary>
         /// Максимальное количество знаков в ответе
         /// </summary>
-        public CaptchaParameters SetMaxLen(int? maxLen)
+        public CaptchaConfig SetMaxLen(int? maxLen)
         {
             if (maxLen.HasValue)
             {
@@ -96,7 +108,7 @@ namespace mevoronin.RuCaptchaNETClient
         /// <summary>
         /// Язык капчи
         /// </summary>
-        public CaptchaParameters SetCharType(CaptchaLanguageEnum lang)
+        public CaptchaConfig SetLanguage(CaptchaLanguageEnum lang)
         {
             if (lang == CaptchaLanguageEnum.Default)
                 parameters.Remove("language");
@@ -108,7 +120,7 @@ namespace mevoronin.RuCaptchaNETClient
         /// <summary>
         /// ID разработчика приложения. Разработчику приложения отчисляется 10% от всех капч, пришедших из его приложения.
         /// </summary>
-        public CaptchaParameters SetCalc(string softId)
+        public CaptchaConfig SetSoftId(string softId)
         {
             parameters["soft_id"] = softId;
             return this;

@@ -40,7 +40,7 @@
   <ItemGroup>
     <Compile Include="CaptchaCharTypeEnum.cs" />
     <Compile Include="CaptchaLanguageEnum.cs" />
-    <Compile Include="CaptchaParameters.cs" />
+    <Compile Include="CaptchaConfig.cs" />
     <Compile Include="RuCaptchaClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RuCaptchaException.cs" />

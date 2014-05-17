@@ -55,11 +55,28 @@ namespace mevoronin.RuCaptchaNETClient
             return MakeGetRequest(url);
         }
 
+        /// <summary>
+        /// Загрузить файл капчи
+        /// </summary>
+        /// <param name="fileName">уть к файлу с капчей</param>
+        /// <returns></returns>
         public string UploadCaptchaFile(string fileName)
+        {
+            return UploadCaptchaFile(fileName, null);
+        }
+        /// <summary>
+        /// Загрузить файл капчи
+        /// </summary>
+        /// <param name="fileName">уть к файлу с капчей</param>
+        /// <param name="config">Параметры</param>
+        /// <returns></returns>
+        public string UploadCaptchaFile(string fileName, CaptchaConfig config)
         {
             string url = string.Format("{0}/in.php", host);
             NameValueCollection nvc = new NameValueCollection();
             nvc.Add("key", api_key);
+            if (config != null)
+                nvc.Add(config.GetParameters());
 
             string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
             byte[] boundarybytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
