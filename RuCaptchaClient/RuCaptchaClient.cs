@@ -16,6 +16,7 @@ namespace mevoronin.RuCaptchaNETClient
     {
         private readonly string api_key;
         const string host = "http://rucaptcha.com";
+        static Dictionary<string, string> errors;
 
         /// <summary>
         /// Конструктор
@@ -24,6 +25,23 @@ namespace mevoronin.RuCaptchaNETClient
         public RuCaptchaClient(string api_key)
         {
             this.api_key = api_key;
+            if (errors == null)
+            {
+                errors = new Dictionary<string, string>();
+                errors.Add("CAPCHA_NOT_READY", "Капча в работе, ещё не расшифрована, необходимо повтороить запрос через несколько секунд.");
+                errors.Add("ERROR_WRONG_ID_FORMAT", "Неверный формат ID капчи. ID должен содержать только цифры.");
+                errors.Add("ERROR_WRONG_CAPTCHA_ID", "Неверное значение ID капчи.");
+                errors.Add("ERROR_CAPTCHA_UNSOLVABLE", "Капчу не смогли разгадать 3 разных работника. Средства за эту капчу не списываются.");
+                errors.Add("ERROR_WRONG_USER_KEY", "Не верный формат параметра key, должно быть 32 символа.");
+                errors.Add("ERROR_KEY_DOES_NOT_EXIST", "Использован несуществующий key.");
+                errors.Add("ERROR_ZERO_BALANCE", "Баланс Вашего аккаунта нулевой.");
+                errors.Add("ERROR_NO_SLOT_AVAILABLE", "Текущая ставка распознования выше, чем максимально установленная в настройках Вашего аккаунта.");
+                errors.Add("ERROR_ZERO_CAPTCHA_FILESIZE", "Размер капчи меньше 100 Байт.");
+                errors.Add("ERROR_TOO_BIG_CAPTCHA_FILESIZE", "Размер капчи более 100 КБайт.");
+                errors.Add("ERROR_WRONG_FILE_EXTENSION", "Ваша капча имеет неверное расширение, допустимые расширения jpg,jpeg,gif,png.");
+                errors.Add("ERROR_IMAGE_TYPE_NOT_SUPPORTED", "Сервер не может определить тип файла капчи.");
+                errors.Add("ERROR_IP_NOT_ALLOWED", "В Вашем аккаунте настроено ограничения по IP с которых можно делать запросы. И IP, с которого пришёл данный запрос не входит в список разрешённых.");
+            }
         }
 
         /// <summary>
@@ -34,7 +52,7 @@ namespace mevoronin.RuCaptchaNETClient
         public string GetCaptcha(string captchaId)
         {
             string url = string.Format("{0}/res.php?key={1}&action=get&id={2}", host, api_key, captchaId);
-            return GetAnswer(url);
+            return MakeGetRequest(url);
         }
 
         public string UploadCaptchaFile(string fileName)
@@ -82,11 +100,11 @@ namespace mevoronin.RuCaptchaNETClient
             requestStream.Write(trailer, 0, trailer.Length);
             requestStream.Close();
 
-            using(WebResponse response = request.GetResponse())
+            using (WebResponse response = request.GetResponse())
             {
                 Stream responseStream = response.GetResponseStream();
                 StreamReader responseReader = new StreamReader(responseStream);
-                return responseReader.ReadToEnd();
+                return ParseAnswer(responseReader.ReadToEnd());
             }
 
         }
@@ -98,66 +116,15 @@ namespace mevoronin.RuCaptchaNETClient
         public decimal GetBalance()
         {
             string url = string.Format("{0}/res.php?key={1}&action=getbalance", host, api_key);
-            string string_balance = GetAnswer(url);
+            string string_balance = MakeGetRequest(url);
             decimal balance = decimal.Parse(string_balance, CultureInfo.InvariantCulture.NumberFormat);
             return balance;
         }
-        /// <summary>
-        /// Вернуть описание ответа сервера
-        /// </summary>
-        /// <param name="serviceAnswer">Ответ сервера</param>
-        private string GetErrorMessage(string serviceAnswer)
-        {
-            string answer = null;
-            switch (answer)
-            {
-                case "CAPCHA_NOT_READY":
-                    answer = "Капча в работе, ещё не расшифрована, необходимо повтороить запрос через несколько секунд.";
-                    break;
-                case "ERROR_WRONG_ID_FORMAT":
-                    answer = "Неверный формат ID капчи. ID должен содержать только цифры.";
-                    break;
-                case "ERROR_WRONG_CAPTCHA_ID":
-                    answer = "Неверное значение ID капчи.";
-                    break;
-                case "ERROR_CAPTCHA_UNSOLVABLE":
-                    answer = "Капчу не смогли разгадать 3 разных работника. Средства за эту капчу не списываются.";
-                    break;
-                case "ERROR_WRONG_USER_KEY":
-                    answer = "Не верный формат параметра key, должно быть 32 символа.";
-                    break;
-                case "ERROR_KEY_DOES_NOT_EXIST":
-                    answer = "Использован несуществующий key.";
-                    break;
-                case "ERROR_ZERO_BALANCE":
-                    answer = "Баланс Вашего аккаунта нулевой.";
-                    break;
-                case "ERROR_NO_SLOT_AVAILABLE":
-                    answer = "Текущая ставка распознования выше, чем максимально установленная в настройках Вашего аккаунта.";
-                    break;
-                case "ERROR_ZERO_CAPTCHA_FILESIZE":
-                    answer = "Размер капчи меньше 100 Байт.";
-                    break;
-                case "ERROR_TOO_BIG_CAPTCHA_FILESIZE":
-                    answer = "Размер капчи более 100 КБайт.";
-                    break;
-                case "ERROR_WRONG_FILE_EXTENSION":
-                    answer = "Ваша капча имеет неверное расширение, допустимые расширения jpg,jpeg,gif,png.";
-                    break;
-                case "ERROR_IMAGE_TYPE_NOT_SUPPORTED":
-                    answer = "Сервер не может определить тип файла капчи.";
-                    break;
-                case "ERROR_IP_NOT_ALLOWED":
-                    answer = "В Вашем аккаунте настроено ограничения по IP с которых можно делать запросы. И IP, с которого пришёл данный запрос не входит в список разрешённых.";
-                    break;
-                default:
-                    answer = "Неопознанный ответ сервера.";
-                    break;
-            }
-            return string.Format("{0} ({1})", answer, serviceAnswer);
-        }
 
-        private string GetAnswer(string url)
+        /// <summary>
+        /// Выполнение Get запроса по указанному URL
+        /// </summary>
+        private string MakeGetRequest(string url)
         {
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
             request.Method = "GET";
@@ -168,11 +135,21 @@ namespace mevoronin.RuCaptchaNETClient
                 StreamReader reader = new StreamReader(responseStream);
                 serviceAnswer = reader.ReadToEnd();
             }
+            return ParseAnswer(serviceAnswer);
+        }
 
-            if (serviceAnswer.StartsWith("OK|"))
+        /// <summary>
+        /// Разбор ответа
+        /// </summary>
+        private string ParseAnswer(string serviceAnswer)
+        {
+            if (errors.Keys.Contains(serviceAnswer))
+                throw new RuCaptchaException(string.Format("{0} ({1})", errors[serviceAnswer], serviceAnswer));
+            else if (serviceAnswer.StartsWith("OK|"))
                 return serviceAnswer.Substring(3);
             else
-                throw new RuCaptchaException(GetErrorMessage(serviceAnswer));
+                return serviceAnswer;
+
         }
     }
 }
