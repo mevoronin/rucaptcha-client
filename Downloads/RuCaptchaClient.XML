@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RuCaptchaClient</name>
+    </assembly>
+    <members>
+        <member name="T:mevoronin.RuCaptchaNETClient.CaptchaCharTypeEnum">
+            <summary>
+            Из чего состоит капча
+            </summary>
+        </member>
+        <member name="F:mevoronin.RuCaptchaNETClient.CaptchaCharTypeEnum.Default">
+            <summary>
+            По-умолчанию
+            </summary>
+        </member>
+        <member name="F:mevoronin.RuCaptchaNETClient.CaptchaCharTypeEnum.OnlyDigits">
+            <summary>
+            Капча состоит только из цифр
+            </summary>
+        </member>
+        <member name="F:mevoronin.RuCaptchaNETClient.CaptchaCharTypeEnum.OnlyLetter">
+            <summary>
+            капча состоит только из букв
+            </summary>
+        </member>
+        <member name="F:mevoronin.RuCaptchaNETClient.CaptchaCharTypeEnum.OnlyDigitsOrOnlyLetter">
+            <summary>
+            Капча состоит либо только из цифр, либо только из букв
+            </summary>
+        </member>
+        <member name="T:mevoronin.RuCaptchaNETClient.CaptchaLanguageEnum">
+            <summary>
+            Язык
+            </summary>
+        </member>
+        <member name="F:mevoronin.RuCaptchaNETClient.CaptchaLanguageEnum.Default">
+            <summary>
+            По-умолчанию
+            </summary>
+        </member>
+        <member name="F:mevoronin.RuCaptchaNETClient.CaptchaLanguageEnum.Russian">
+            <summary>
+            Русский
+            </summary>
+        </member>
+        <member name="F:mevoronin.RuCaptchaNETClient.CaptchaLanguageEnum.English">
+            <summary>
+            Английский
+            </summary>
+        </member>
+        <member name="T:mevoronin.RuCaptchaNETClient.CaptchaConfig">
+            <summary>
+            Конфиг капчи
+            </summary>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.CaptchaConfig.GetParameters">
+            <summary>
+            Получить список параметров
+            </summary>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.CaptchaConfig.#ctor">
+            <summary>
+            Конструктор конфига капчи
+            </summary>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.CaptchaConfig.SetIsPhrase(System.Boolean)">
+            <summary>
+            Капча имеет два слова
+            </summary>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.CaptchaConfig.SetRegisterSensitive(System.Boolean)">
+            <summary>
+            Капча регистр ответа имеет значения
+            </summary>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.CaptchaConfig.SetNeedCalc(System.Boolean)">
+            <summary>
+            Работнику нужно совершить математическое действие с капчей
+            </summary>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.CaptchaConfig.SetCharType(mevoronin.RuCaptchaNETClient.CaptchaCharTypeEnum)">
+            <summary>
+            Из чего состоит капча
+            </summary>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.CaptchaConfig.SetMinLen(System.Nullable{System.Int32})">
+            <summary>
+            Минимальное количество знаков в ответе
+            </summary>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.CaptchaConfig.SetMaxLen(System.Nullable{System.Int32})">
+            <summary>
+            Максимальное количество знаков в ответе
+            </summary>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.CaptchaConfig.SetLanguage(mevoronin.RuCaptchaNETClient.CaptchaLanguageEnum)">
+            <summary>
+            Язык капчи
+            </summary>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.CaptchaConfig.SetSoftId(System.String)">
+            <summary>
+            ID разработчика приложения. Разработчику приложения отчисляется 10% от всех капч, пришедших из его приложения.
+            </summary>
+        </member>
+        <member name="P:mevoronin.RuCaptchaNETClient.CaptchaConfig.Parameters">
+            <summary>
+            Перечень установленных параметров
+            </summary>
+        </member>
+        <member name="T:mevoronin.RuCaptchaNETClient.RuCaptchaClient">
+            <summary>
+            Клиент сервиса RuCaptcha
+            </summary>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.RuCaptchaClient.#ctor(System.String)">
+            <summary>
+            Конструктор
+            </summary>
+            <param name="api_key">Ключ доступа к API</param>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.RuCaptchaClient.GetCaptcha(System.String)">
+            <summary>
+            Получить расшифрованное значение капчи
+            </summary>
+            <param name="captchaId">Id капчи</param>
+            <returns></returns>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.RuCaptchaClient.UploadCaptchaFile(System.String)">
+            <summary>
+            Загрузить файл капчи
+            </summary>
+            <param name="fileName">уть к файлу с капчей</param>
+            <returns></returns>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.RuCaptchaClient.UploadCaptchaFile(System.String,mevoronin.RuCaptchaNETClient.CaptchaConfig)">
+            <summary>
+            Загрузить файл капчи
+            </summary>
+            <param name="fileName">уть к файлу с капчей</param>
+            <param name="config">Параметры</param>
+            <returns></returns>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.RuCaptchaClient.GetBalance">
+            <summary>
+            Получить текущий баланс аккаунта
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.RuCaptchaClient.MakeGetRequest(System.String)">
+            <summary>
+            Выполнение Get запроса по указанному URL
+            </summary>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.RuCaptchaClient.ParseAnswer(System.String)">
+            <summary>
+            Разбор ответа
+            </summary>
+        </member>
+        <member name="T:mevoronin.RuCaptchaNETClient.RuCaptchaException">
+            <summary>
+            Исключение генерируемое при неправильном ответе сервера
+            </summary>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.RuCaptchaException.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.RuCaptchaException.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:mevoronin.RuCaptchaNETClient.RuCaptchaException.#ctor(System.String,System.Exception)">
+            <summary>
+            
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -29,6 +29,9 @@ namespace mevoronin.RuCaptchaNETClient
             return nvc;
         }
 
+        /// <summary>
+        /// Конструктор конфига капчи
+        /// </summary>
         public CaptchaConfig()
         {
             parameters = new Dictionary<string, string>();
